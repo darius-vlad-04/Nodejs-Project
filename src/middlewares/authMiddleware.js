@@ -10,7 +10,6 @@ const authorization = (req, res, next) => {
         console.log(data)
         req.userId = data.userId;
         req.role = data.role
-        console.log(req.userId)
         return next();
     } catch {
         return res.sendStatus(403);

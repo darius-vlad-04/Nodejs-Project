@@ -6,6 +6,7 @@ import authRoutes from "./src/routes/authRoutes.js";
 import logger from "./src/middlewares/loggerMiddleware.js";
 import cookieParser from "cookie-parser"
 import authorization from "./src/middlewares/authMiddleware.js"
+import startupRoutes from "./src/routes/startupRoutes.js";
 
 const app = express();
 const port = 3000;
@@ -26,7 +27,7 @@ app.get('/test-sqs', (req, res) => {
 app.use(logger)
 app.use(userRouter)
 app.use(authRoutes)
-
+app.use(startupRoutes)
 
 app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}/test-sqs`);
