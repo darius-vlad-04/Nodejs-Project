@@ -13,13 +13,13 @@ const userController =
             res.send(allUsers)
         },
         insertUser: async (req, res) => {
-            await userService.insertUser(req.body.name, req.body.email, req.body.password)
-            res.send("Done")
+            let user =  await  userService.insertUser(req.body.name, req.body.email, req.body.password)
+            res.send(user)
         }
         ,
         findUserById: async (req, res) => {
             try {
-                let user = await userService.findUserById(req.body.id)
+                let user = await userService.findUserById(req.params.id)
                 res.send(user)
             } catch (e) {
                 res.status(400).send(e.message)
@@ -30,7 +30,7 @@ const userController =
         deleteUserById: async (req, res) => {
             try {
                 console.log(req.body)
-                let response = await userService.deleteUserById(req.body.id)
+                let response = await userService.deleteUserById(req.params.id)
                 res.send(response)
 
             } catch (e) {
@@ -41,11 +41,15 @@ const userController =
         updateUser: async (req, res) => {
             try {
                 console.log(req.body)
-                let response = await userService.updateUser(req.body)
+                let response = await userService.updateUser(req.params.id, req.body)
                 res.send(response)
             } catch (e) {
                 res.status(400).send(e.message)
             }
+        },
+
+        testSendMessage: async (req, res) => {
+            res.send(`I am sending from this id : ${req.userId}`)
         }
 
     }

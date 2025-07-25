@@ -1,5 +1,6 @@
 import connection from "../config/db_connection.js";
-import userModel from "../models/userModel.js";
+import bcrypt from "bcrypt"
+
 
 const userService =
     {
@@ -8,10 +9,10 @@ const userService =
             myResult = connection.promise().query("SELECT * FROM user")
             return myResult
         },
-        insertUser(name, email, password) {
-            let result
-            result = connection.promise().query("INSERT INTO user (name , email ,password) VALUES(? , ? , ? )", [name, email, password])
+        async insertUser(name, email, password) {
 
+            const hashedPassword = await bcrypt.hash(password, 10)
+            const [result] = await connection.promise().query("INSERT INTO user (name , email ,password) VALUES(? , ? , ? )", [name, email, hashedPassword])
         }
         ,
         async findUserById(id) {
@@ -39,17 +40,27 @@ const userService =
 
         }
         ,
-        async updateUser(userObject) {
-            let userId = userObject.id
+        async updateUser(userId, userObject) {
             try {
                 let user = await this.findUserById(userId)
             } catch (e) {
                 throw e
             }
-
-            connection.promise().query("UPDATE user SET name =  ? , email = ?, password = ?", [userObject.name, userObject.email, userObject.password])
+            console.log(userId)
+            connection.promise().query("UPDATE user SET name =  ? , email = ?, password = ? WHERE id = ?", [userObject.name, userObject.email, userObject.password, userId])
             return "User has been updated"
 
+        }
+        ,
+        async findUserByEmail(email) {
+            try {
+                const [rows] = await connection.promise().query("SELECT * FROM user WHERE email = ?", [email])
+                if (rows.length === 0)
+                    throw new Error("User does not exist")
+                return rows[0];
+            } catch (e) {
+                throw e;
+            }
         }
 
     }
