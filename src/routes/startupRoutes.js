@@ -1,14 +1,14 @@
 import express from 'express'
 import startupController from "../controllers/startupController.js";
-import authorization from "../middlewares/authMiddleware.js";
+import tokenValidation from "../middlewares/verifyTokenMiddleware.js";
 import adminMiddleware from "../middlewares/adminMiddleware.js";
 
 const startupRoutes = express.Router()
 
-startupRoutes.get("/startups", authorization, adminMiddleware, startupController.getAllStartups)
-startupRoutes.post("/startups", authorization, startupController.createStartup)
+startupRoutes.get("/startups", tokenValidation, adminMiddleware, startupController.getAllStartups)
+startupRoutes.post("/startups", tokenValidation, startupController.createStartup)
 startupRoutes.get("/startups/:id", startupController.getStartupById)
-startupRoutes.delete("/startups/:id", authorization, startupController.deleteStartupById)
-startupRoutes.put("/startups/:id", authorization, startupController.updateStartupById)
+startupRoutes.delete("/startups/:id", tokenValidation, startupController.deleteStartupById)
+startupRoutes.put("/startups/:id", tokenValidation, startupController.updateStartupById)
 
 export default startupRoutes

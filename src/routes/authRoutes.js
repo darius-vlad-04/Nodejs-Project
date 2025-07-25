@@ -1,10 +1,10 @@
 import express from 'express'
 import authController from "../controllers/authController.js";
-import authorization from "../middlewares/authMiddleware.js"
+import tokenValidation from "../middlewares/verifyTokenMiddleware.js"
 
 const authRoutes = express.Router();
 
 authRoutes.post("/signup" , authController.signup)
 authRoutes.post("/login",  authController.login)
-authRoutes.get("/logout", authorization, authController.logout)
+authRoutes.get("/logout", tokenValidation, authController.logout)
 export default authRoutes

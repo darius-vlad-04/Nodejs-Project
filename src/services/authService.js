@@ -32,7 +32,13 @@ const authService =
                 throw new Error("Wrong password!");
             }
 
-            const token = jwt.sign({userId: user.id, role: user.role}, process.env.TOKEN_SECRET,
+            let [permissions, data] = await connection.promise().query("SELECT p.id FROM user u JOIN roles_permissions rp on u.role_id = rp.role_id JOIN permissions p on rp.permission_id = p.id WHERE u.id =?", [user.id])
+            let newPermissions = permissions.map(permission => permission.id)
+            const token = jwt.sign({
+                    userId: user.id,
+                    role: user.role_id,
+                    permissions: newPermissions
+                }, process.env.TOKEN_SECRET,
                 {
                     expiresIn: '6h',
                 })

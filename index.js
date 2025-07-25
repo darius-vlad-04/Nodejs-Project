@@ -5,7 +5,7 @@ import userRouter from "./src/routes/userRoutes.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import logger from "./src/middlewares/loggerMiddleware.js";
 import cookieParser from "cookie-parser"
-import authorization from "./src/middlewares/authMiddleware.js"
+import tokenValidation from "./src/middlewares/verifyTokenMiddleware.js"
 import startupRoutes from "./src/routes/startupRoutes.js";
 
 const app = express();
