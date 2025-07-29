@@ -5,7 +5,7 @@ import adminMiddleware from "../middlewares/adminMiddleware.js";
 
 const startupRoutes = express.Router()
 
-startupRoutes.get("/startups", tokenValidation, adminMiddleware, startupController.getAllStartups)
+startupRoutes.get("/startups", tokenValidation, startupController.getAllStartups)
 startupRoutes.post("/startups", tokenValidation, startupController.createStartup)
 startupRoutes.get("/startups/:id", startupController.getStartupById)
 startupRoutes.delete("/startups/:id", tokenValidation, startupController.deleteStartupById)
