@@ -1,6 +1,9 @@
 import connection from "../config/db_connection.js"
 import fs from 'fs'
 import * as path from "node:path";
+import {createRequire} from 'module';
+
+const require = createRequire(import.meta.url);
 
 const migrationsScripts =
     {
@@ -16,31 +19,47 @@ const migrationsScripts =
         },
 
 
+        // async applySingleMigration(filename) {
+        //     const fullPath = path.resolve('./src/migrations/', filename);
+        //     let sqlScript
+        //     sqlScript = fs.readFileSync(fullPath, 'utf-8')
+        //     let parts = filename.split("_");
+        //     let migrationDetails = [parts[0], parts.slice(1).join("_")];
+        //     let migrationId = migrationDetails[0]
+        //     let migrationKey = migrationDetails[1].split(".")[0];
+        //     let timestamp = new Date();
+        //     try {
+        //         await connection.promise().query(sqlScript)
+        //         await connection.promise().query("INSERT INTO migrations (id, description, timestamp) VALUES(?,?,?)", [migrationId, migrationKey, timestamp])
+        //
+        //     } catch (e) {
+        //         throw e
+        //     }
+        //
+        // },
+
         async applySingleMigration(filename) {
-            const fullPath = path.resolve('./src/migrations/', filename);
-            let sqlScript
-            sqlScript = fs.readFileSync(fullPath, 'utf-8')
-            let parts = filename.split("_");
+            let parts = filename.split("_")
             let migrationDetails = [parts[0], parts.slice(1).join("_")];
             let migrationId = migrationDetails[0]
             let migrationKey = migrationDetails[1].split(".")[0];
             let timestamp = new Date();
             try {
-                await connection.promise().query(sqlScript)
+                let migration = await require(`../migrations/${filename}`)
+                await migration.default.up();
                 await connection.promise().query("INSERT INTO migrations (id, description, timestamp) VALUES(?,?,?)", [migrationId, migrationKey, timestamp])
-
             } catch (e) {
                 throw e
             }
-
         },
+
         async applyMigrations() {
             let latestVersion = await this.getLastMigrationVersion()
             const files = fs.readdirSync('./src/migrations')
             for (let file of files) {
                 let migrationId = file.split("_")[0]
                 if (migrationId > latestVersion) {
-                    await this.applySingleMigration(file)
+                    await this.applySingleMigration(file);
                 }
             }
         }

@@ -10,7 +10,6 @@ const authService =
             const hashedPassword = await bcrypt.hash(user.password, 10)
             let created_at = new Date();
 
-
             try {
                 await connection.promise().query("INSERT INTO user (name , email ,password,created_at , profile_bio) VALUES(? , ? , ? ,?,?)", [user.name, user.email, hashedPassword, created_at, user.profile_bio ?? "User currently has no description"])
             } catch (e) {

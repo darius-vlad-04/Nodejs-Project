@@ -7,6 +7,7 @@ import logger from "./src/middlewares/loggerMiddleware.js";
 import cookieParser from "cookie-parser"
 import startupRoutes from "./src/routes/startupRoutes.js";
 import {runStartupTasks} from "./src/scripts/startupTasks.js"
+import multer from "multer"
 
 
 const app = express();
@@ -14,7 +15,7 @@ const port = 3000;
 
 app.use(express.json());
 app.use(cookieParser())
-
+const upload = multer({dest: 'uploads/'});
 app.get('/test-sqs', (req, res) => {
     connection.query('SELECT 1 + 1 AS solution', (err, results) => {
         if (err) {
