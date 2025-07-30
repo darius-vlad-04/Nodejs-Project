@@ -43,7 +43,6 @@ const authService =
                 })
 
             return token
-
         }
     }
 

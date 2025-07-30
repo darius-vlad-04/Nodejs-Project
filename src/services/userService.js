@@ -15,6 +15,7 @@ const userService =
             const [result] = await connection.promise().query("INSERT INTO user (name , email ,password) VALUES(? , ? , ? )", [name, email, hashedPassword])
         }
         ,
+
         async findUserById(id) {
             try {
                 const [rows] = await connection.promise().query("SELECT * FROM user WHERE id = ?", [id]);
@@ -29,29 +30,39 @@ const userService =
             }
         }
         ,
-        deleteUserById(id) {
+
+        async deleteUserById(id) {
             try {
                 this.findUserById(id)
             } catch (e) {
                 throw e;
             }
-            connection.promise().query("DELETE  FROM user WHERE id = ?", [id]);
-            return "User has been deleted"
 
-        }
-        ,
-        async updateUser(userId, userObject) {
             try {
-                let user = await this.findUserById(userId)
+                await connection.promise().query("DELETE  FROM user WHERE id = ?", [id]);
             } catch (e) {
                 throw e
             }
-            console.log(userId)
-            connection.promise().query("UPDATE user SET name =  ? , email = ?, password = ? WHERE id = ?", [userObject.name, userObject.email, userObject.password, userId])
-            return "User has been updated"
 
         }
         ,
+
+        async updateUser(userId, userObject) {
+            try {
+                await this.findUserById(userId)
+            } catch (e) {
+                throw e
+            }
+            try {
+                const hashedPassword = await bcrypt.hash(userObject.password, 10)
+                await connection.promise().query("UPDATE user SET name =  ? , email = ?, password = ? WHERE id = ?", [userObject.name, userObject.email, hashedPassword, userId])
+            } catch (e) {
+                throw e
+            }
+
+        }
+        ,
+
         async findUserByEmail(email) {
             try {
                 const [rows] = await connection.promise().query("SELECT * FROM user WHERE email = ?", [email])
@@ -60,6 +71,15 @@ const userService =
                 return rows[0];
             } catch (e) {
                 throw e;
+            }
+        }
+        ,
+
+        async uploadProfilePic(id, path) {
+            try {
+                await connection.promise().query("UPDATE user SET profile_pic_path = ? WHERE id = ?", [path, id])
+            } catch (e) {
+                throw e
             }
         }
 

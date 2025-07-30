@@ -49,8 +49,7 @@ const startupService =
                 throw e;
             }
             try {
-                connection.promise().query("DELETE  FROM startup WHERE id = ?", [id]);
-                return "Startup has been deleted!"
+                await connection.promise().query("DELETE  FROM startup WHERE id = ?", [id]);
             } catch (e) {
                 throw e
             }
@@ -65,8 +64,7 @@ const startupService =
             }
 
             try {
-                connection.promise().query("UPDATE startup SET name = ? , description = ? , funding_goal = ?  WHERE id = ?", [startupObject.name, startupObject.description, startupObject.funding_goal, id])
-                return "Startup has been updated"
+                await connection.promise().query("UPDATE startup SET name = ? , description = ? , funding_goal = ?  WHERE id = ?", [startupObject.name, startupObject.description, startupObject.funding_goal, id])
             } catch (e) {
                 throw e
             }
@@ -75,4 +73,4 @@ const startupService =
     }
 
 
-    export default startupService
+export default startupService

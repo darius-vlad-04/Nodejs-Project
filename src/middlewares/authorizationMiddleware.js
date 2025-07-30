@@ -1,7 +1,13 @@
-const authorization = (permission) => async (req, res, next) => {
+const authorization = (requiredPermissions) => async (req, res, next) => {
+    const userPermissions = req.permissions;
+    let authorized = true;
+    for (let requiredPermission of requiredPermissions) {
+        if (!userPermissions.includes(requiredPermission)) {
+            authorized = false
+        }
+    }
 
-    const permissions = req.permissions
-    if (!permissions.includes(permission)) {
+    if (authorized === false) {
         return res.sendStatus(403).send("You do not have the permission to use this!")
     } else {
         next();

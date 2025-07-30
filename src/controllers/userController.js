@@ -11,10 +11,6 @@ const userController =
         getAllUsers: async (req, res) => {
             let [allUsers, fields] = await userService.getAllUsers()
             res.send(allUsers)
-        },
-        insertUser: async (req, res) => {
-            let user =  await  userService.insertUser(req.body.name, req.body.email, req.body.password)
-            res.send(user)
         }
         ,
         findUserById: async (req, res) => {
@@ -30,11 +26,11 @@ const userController =
         deleteUserById: async (req, res) => {
             try {
                 console.log(req.body)
-                let response = await userService.deleteUserById(req.params.id)
-                res.send(response)
+                await userService.deleteUserById(req.params.id)
+                res.status(200).json({message: "User has been deleted!"})
 
             } catch (e) {
-                res.status(400).send(e.message)
+                res.status(400).json({error: e.message})
             }
         },
 
@@ -42,14 +38,19 @@ const userController =
             try {
                 console.log(req.body)
                 let response = await userService.updateUser(req.params.id, req.body)
-                res.send(response)
+                res.status(200).json({message: "User has been updated!"})
             } catch (e) {
-                res.status(400).send(e.message)
+                res.status(400).json({error: e.message})
             }
         },
 
-        testSendMessage: async (req, res) => {
-            res.send(`I am sending from this id : ${req.userId}`)
+        uploadPhoto: async (req, res) => {
+            try {
+                await userService.uploadProfilePic(req.userId, req.file.path);
+                res.status(200).json({message: "Profile picture has been uploaded"})
+            } catch (e) {
+                res.status(400).json({error: "Error uploading picture"})
+            }
         }
 
     }

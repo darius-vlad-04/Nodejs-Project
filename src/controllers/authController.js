@@ -4,7 +4,7 @@ const authController =
     {
         signup: async (req, res) => {
             try {
-
+                console.log(req)
                 await authService.signup(req.body)
                 res.status(200).json({message: "Successfully registered!"})
             } catch (e) {

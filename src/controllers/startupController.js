@@ -16,7 +16,7 @@ const startupController =
             try {
                 req.body.founder_id = req.userId
                 await startupService.createStartup(req.body)
-                res.status(200).json({message: "Successfully registered!"})
+                res.status(200).json({message: "Successfully created startup!"})
             } catch (e) {
                 return res.status(400).json({error: e.message})
             }
@@ -28,7 +28,7 @@ const startupController =
                 let startup = await startupService.findStartupById(req.params.id)
                 return res.send(startup)
             } catch (e) {
-                return res.status(400).send(e.message)
+                return res.status(400).json({error: e.message})
             }
         },
 
@@ -38,7 +38,7 @@ const startupController =
                 startup = await startupService.findStartupById(req.params.id)
 
             } catch (e) {
-                return res.status(400).send(e.message)
+                return res.status(400).json({error: e.message})
             }
 
             if (startup.founder_id !== req.userId) {
@@ -46,20 +46,18 @@ const startupController =
             }
             try {
                 let response = await startupService.deleteStartupById(req.params.id)
-                return res.send(response)
+                return res.status(200).json({message: "Startup has been deleted"})
             } catch (e) {
-               return  res.status(400).send(e.message)
+                return res.status(400).json({error: e.message})
             }
-        }
-
-        ,
+        },
 
         updateStartupById: async (req, res) => {
             try {
                 let response = await startupService.updateStartupById(req.params.id, req.body)
-                res.send(response)
+                res.status(200).json({message: "Startup has been updated"})
             } catch (e) {
-                res.status(400).send(e.message)
+                res.status(400).json({error: e.message})
             }
         }
     }
