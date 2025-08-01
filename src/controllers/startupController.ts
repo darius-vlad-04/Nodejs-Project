@@ -87,13 +87,10 @@ const startupController: IStartupController = {
                 return res.status(500).json({error: "An unknown error occurred during startup lookup for deletion."});
             }
         }
-
         const userId = req.userId;
-
         if (userId === undefined) {
             return res.status(401).json({error: "Authentication required: User ID not found."});
         }
-
 
         if (startup.founder_id !== userId) {
             return res.status(403).json({error: "Unauthorized: You are not the founder of this startup."});
@@ -111,6 +108,7 @@ const startupController: IStartupController = {
             }
         }
     },
+
 
     updateStartupById: async (req: Request, res: Response): Promise<Response> => {
         const startupId = parseInt(req.params.id);

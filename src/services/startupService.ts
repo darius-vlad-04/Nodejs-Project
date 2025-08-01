@@ -55,8 +55,6 @@ const startupService: IStartupService = {
         try {
 
             await this.findStartupById(id);
-
-
             const [result] = await connection.promise().query<ResultSetHeader>("DELETE FROM startup WHERE id = ?", [id]);
             if (result.affectedRows === 0) {
                 throw new Error("Failed to delete startup: Startup not found or no rows affected.");

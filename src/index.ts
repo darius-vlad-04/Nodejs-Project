@@ -30,10 +30,12 @@ app.get('/test-sqs', (req: Request, res: Response) => {
 });
 
 app.use(logger)
+app.use(perksRoutes)
 app.use(userRouter)
 app.use(authRoutes)
-app.use(perksRoutes)
+
 app.use(startupRoutes)
+
 
 
 app.listen(port, async () => {
